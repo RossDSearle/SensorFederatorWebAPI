@@ -1,0 +1,17 @@
+
+This file shows steps for Launching Plumber web services under pm2 on Ternsoils VM
+
+info at
+http://pm2.keymetrics.io/docs/usage/quick-start/
+https://github.com/Unitech/pm2
+
+use the NodeJS cmd prompt to run the commands - see the windows start menu
+
+pm2 start --interpreter="C:/R/R-3.4.4/bin/x64/Rscript.exe" C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederationWebAPI/StartServices.R --name plumberSensorAPI
+pm2 stop plumberSensorAPI
+pm2 list
+pm2 delete plumberSensorAPI
+pm2 restart 0
+pm2 restart plumberSensorAPI
+
+http://ternsoils.nexus.csiro.au:8077/SensorAPI/getSensorLocations?usr=Public&pwd=Public&siteID=cosmoz.site.13.plat&sensorType=Soil-Moisture

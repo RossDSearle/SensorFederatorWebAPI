@@ -1,0 +1,7 @@
+http://127.0.0.1:8070/SensorAPI/getSensorLocations?format=csv
+
+http://127.0.0.1:8070/SensorAPI/getSensorLocations?format=xml
+
+http://127.0.0.1:8070/SensorAPI/getSensorLocations?format=html
+
+http://127.0.0.1:8070/SensorAPI/getSensorLocations?format=json
