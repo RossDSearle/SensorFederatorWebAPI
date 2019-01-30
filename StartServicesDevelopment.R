@@ -9,7 +9,7 @@ if(machineName == 'FANCY-DP'){
   senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
   deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
   server <- '127.0.0.1'
-  portNum <- 8072
+  portNum <- 8070
 }else if (machineName == 'TERNSOILS') {
   senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
   deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
@@ -19,7 +19,7 @@ if(machineName == 'FANCY-DP'){
   #####  need to change these
   senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
   deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
-  portNum <- 8072
+  portNum <- 8070
 }else{
   senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
   deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
@@ -63,13 +63,13 @@ cat("\n", sep = '')
 
 r <- plumb(paste0(deployDir, "/apiEndPoints.R"))  # Where 'myfile.R' is the location of the file shown above
 print(r)
-#
-#  if(machineName == 'FANCY-DP'){
-#    if("package:htmltidy" %in% search() ){
-#     viewer <- getOption("viewer")
-#     viewer('http://127.0.0.1:8070/__swagger__/')
-#    }
-#  }
+
+ if(machineName == 'FANCY-DP'){
+   if("package:htmltidy" %in% search() ){
+    viewer <- getOption("viewer")
+    viewer('http://127.0.0.1:8070/__swagger__/')
+   }
+ }
  r$run(host = server, port=portNum, swagger = TRUE)
 
 

@@ -13,6 +13,7 @@ apiChk = ''
 function(req){
 
 
+
   logentry <- paste0(as.character(Sys.time()), ",",
        machineName, ",",
        req$REQUEST_METHOD, req$PATH_INFO, ",",
@@ -124,9 +125,6 @@ apiGetSensorInfo <- function(usr='Public', pwd='Public', siteid=NULL, sensortype
     check_GetSensorInfo(siteid, sensorid, sensortype)
     DF <- getSensorInfo(usr=usr, pwd=pwd, siteID=siteid, sensorType=sensortype)
 
-    generateRepsonse()
-
-
 
     return(DF)
   }, error = function(res)
@@ -157,7 +155,7 @@ apiGetSensorDataStreams <- function(res, usr='Public', pwd='Public', siteid=NULL
 
   tryCatch({
 
-    check_GetSensorDataStreams(siteid= siteid, sensorid=sensorid, sensortype=sensortype, startDate=startdate, endDate=enddate )
+    check_GetSensorDataStreams(siteid=siteid, sensorid=sensorid, sensortype=sensortype, startDate=startdate, endDate=enddate )
        #sd <- getSensorDataStreams(usr=usr, pwd=pwd, siteID=siteid, sensorType=sensortype, sensorID=sensorid, startDate=startdate, endDate=enddate, aggPeriod=aggperiod, outFormat ='DF' )
    # return(sd)
 
