@@ -1,3 +1,31 @@
+machineName <- as.character(Sys.info()['nodename'])
+print(machineName)
+if(machineName == 'FANCY-DP'){
+  senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
+  deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
+  server <- '127.0.0.1'
+  portNum <- 8072
+}else if (machineName == 'TERNSOILS') {
+  senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
+  deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
+  server = '152.83.244.137'
+  portNum <- 8070
+}else if (machineName == 'soils-discovery') {
+  #####  need to change these
+  senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
+  deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
+  portNum <- 8072
+}else{
+  senFedDir <- 'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederator'
+  deployDir <-'C:/Users/sea084/Dropbox/RossRCode/Git/SensorFederatorWebAPI'
+  portNum <- 8070
+}
+
+
+source(paste0(senFedDir, '/Backends/Backend_Config.R'))
+
+
+
 
 
 apiChk = ''
@@ -29,7 +57,14 @@ function(req){
      dir.create(logDir)
     }
 
-  logfile <- paste0(deployDir, "/Logs/SensorFederationAPI_logs_", dt, ".csv")
+  logfile <- paste0(deployDir, "/Logs/SoilFederationAPI_logs_", dt, ".csv")
+  try(writeLogEntry(logfile, logentry), silent = TRUE)
+
+  plumber::forward()
+}
+
+writeLogEntry <- function(logfile, logentry){
+
   if(file.exists(logfile)){
     cat(logentry, '\n', file=logfile, append=T)
   }else{
@@ -37,10 +72,7 @@ function(req){
     cat(hdr, file=logfile, append=F)
     cat(logentry, '\n', file=logfile, append=T)
   }
-
-  plumber::forward()
 }
-
 
 
 
@@ -50,6 +82,7 @@ function(req){
 #* @param usr (Optional) User name for logging into the system - if not supplied defaults to 'Public'
 #* @param format (Optional) fotmat of the response to return. Either json, csv, or xml. Default = json
 #* @param numToReturn (Optional) The number of closest sensor locations to be returned. Default = 10
+#* @param extendedSet (Optional) Return public BoM and Silo locations. Values - T or F. Default =F
 #* @param radius_km (Optional) The radius around the supplied location in which to search.  Default = NULL ie  returns all records
 #* @param latitude (Optional) If a location is entered  the sensor locations closest to this location will be returned. If not specified all sensor locations will be returned
 #* @param longitude (Optional) If a location is entered  the sensor locations closest to this location will be returned. If not specified all sensor locations will be returned
@@ -59,14 +92,14 @@ function(req){
 
 
 #* @get /SensorAPI/getSensorLocations
-apiGetSensorLocations <- function(res, usr='Public', pwd='Public', siteid=NULL, sensortype=NULL, longitude=NULL, latitude=NULL, radius_km=NULL, bbox=NULL, numToReturn=NULL, format='json'){
+apiGetSensorLocations <- function(res, usr='Public', pwd='Public', siteid=NULL, sensortype=NULL, longitude=NULL, latitude=NULL, extendedSet=F,  radius_km=NULL, bbox=NULL, numToReturn=NULL, format='json'){
 
   tryCatch({
 
     check_GetSensorLocations(siteid, sensortype, longitude, latitude, radius_km, bbox, numToReturn)
 
 
-        DF <- getSensorLocations(usr=usr, pwd=pwd, siteID=siteid, sensorType=sensortype, longitude=longitude, latitude=latitude, radius_km=radius_km, bbox=bbox, numToReturn=numToReturn)
+        DF <- getSensorLocations(usr=usr, pwd=pwd, siteID=siteid, sensorType=sensortype, longitude=longitude, latitude=latitude, extendedSet=as.logical(extendedSet), radius_km=radius_km, bbox=bbox, numToReturn=numToReturn)
 
         if(format == 'xml'){
 
@@ -143,7 +176,7 @@ apiGetSensorInfo <- function(usr='Public', pwd='Public', siteid=NULL, sensortype
 
 #* @param pwd (Optional) Password for logging into the system - if not supplied defaults to 'Public'.
 #* @param usr (Optional) User name for logging into the system - if not supplied defaults to 'Public'.
-#* @param format (Optional) fotmat of the response to return. Either json, csv, or xml. Default = json
+#* @param format (Optional) format of the response to return. Either json, csv, or xml. Default = json
 #* @param sensorid (Optional) Filter on a specific sensor. If not specified all sensors data streams at the site of the type specified will be returned.
 #* @param aggperiod (Optional) Agreggate the time steps of the data stream returned. Options are 'none', 'minutes', 'hours', 'days', 'weeks', 'months', 'quarters','years'. If not supplied the default is 'none'
 #* @param enddate (Optional) The ending date for the data stream to be returned. Format %Y-%m-%dT%H:%M:%S eg 2018-04-20T09:00:00. If not specified data will be returned until today.
@@ -154,6 +187,11 @@ apiGetSensorInfo <- function(usr='Public', pwd='Public', siteid=NULL, sensortype
 apiGetSensorDataStreams <- function(res, usr='Public', pwd='Public', siteid=NULL, sensortype=NULL, sensorid=NULL, startdate=NULL, enddate=NULL, aggperiod='none', format='json'){
 
   tryCatch({
+
+    # siteid <- 'OzNet_m1'
+    # sensortype <- 'Soil-Moisture'
+    # startDate <- ''
+    # endDate <- ''
 
     check_GetSensorDataStreams(siteid=siteid, sensorid=sensorid, sensortype=sensortype, startDate=startdate, endDate=enddate )
        #sd <- getSensorDataStreams(usr=usr, pwd=pwd, siteID=siteid, sensorType=sensortype, sensorID=sensorid, startDate=startdate, endDate=enddate, aggPeriod=aggperiod, outFormat ='DF' )
